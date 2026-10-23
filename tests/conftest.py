@@ -1,4 +1,5 @@
 """Shared test setup: every test gets a fresh, empty in-memory database."""
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine

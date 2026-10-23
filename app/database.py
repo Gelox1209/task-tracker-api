@@ -1,4 +1,5 @@
 """Database setup: creates the engine and gives each request its own session."""
+
 import os
 
 from sqlalchemy import create_engine
@@ -10,7 +11,9 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./tasks.db")
 engine = create_engine(
     DATABASE_URL,
     # Needed only for SQLite, which by default allows one thread per connection.
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
+    connect_args={"check_same_thread": False}
+    if DATABASE_URL.startswith("sqlite")
+    else {},
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
