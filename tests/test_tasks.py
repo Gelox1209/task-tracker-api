@@ -193,6 +193,7 @@ def test_delete_task(client):
 
     # Assert the response
     assert response.status_code == 204
+    assert response.content == b""  # No content for 204 response   
 
     # Verify the task is actually deleted
     get_response = client.get(f"/tasks/{created['id']}")
