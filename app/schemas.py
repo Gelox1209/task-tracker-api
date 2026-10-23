@@ -29,4 +29,5 @@ class TaskUpdate(BaseModel):
     title: str = Field(default=None, min_length=1, max_length=200)
     # str | none means the field can be a string or None, allowing for null values.
     description: str | None = Field(default=None, max_length=1000)
+    # Notice 'title' and 'done' don't have | None, meaning they reject null values.
     done: bool = None
