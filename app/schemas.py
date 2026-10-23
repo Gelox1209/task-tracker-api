@@ -21,3 +21,11 @@ class TaskRead(BaseModel):
     description: str | None
     done: bool
     created_at: datetime
+
+
+class TaskUpdate(BaseModel):
+    # Fields are optional for partial updates. If a field is not provided, it won't be changed.
+    # str | none means the field can be a string or None, allowing for null values.
+    title: str = Field(default=None, min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=1000)
+    done: bool = None
