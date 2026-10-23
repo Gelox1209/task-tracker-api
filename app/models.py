@@ -1,4 +1,5 @@
 """Database tables (what is stored)."""
+
 from datetime import UTC, datetime
 
 from sqlalchemy import Boolean, DateTime, Integer, String

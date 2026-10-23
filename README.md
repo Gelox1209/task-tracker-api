@@ -36,6 +36,8 @@ pytest --cov=app --cov-report=term-missing   # see which lines aren't tested
 | POST   | `/tasks`        | Create a task      | 201     |
 | GET    | `/tasks`        | List all tasks     | 200     |
 | GET    | `/tasks/{id}`   | Get one task       | 200 / 404 |
+| PATCH  | `/tasks/{id}`   | Edit a task        | 200 / 422 |
+| DELETE | `/tasks/{id}`   | Delete a task      | 204     |
 
 ## Project structure
 
@@ -52,7 +54,7 @@ tests/
 ```
 
 ## Roadmap
-- [ ] `PUT /tasks/{id}` and `DELETE /tasks/{id}`
+- [x] `PUT /tasks/{id}` and `DELETE /tasks/{id}`
 - [ ] Filtering (`?done=true`) and pagination
 - [ ] User accounts with JWT auth
 - [ ] PostgreSQL + Docker

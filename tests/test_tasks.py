@@ -8,7 +8,9 @@ def test_health(client):
 
 
 def test_create_task(client):
-    response = client.post("/tasks", json={"title": "Learn Git", "description": "branches + PRs"})
+    response = client.post(
+        "/tasks", json={"title": "Learn Git", "description": "branches + PRs"}
+    )
 
     assert response.status_code == 201
     data = response.json()
@@ -81,10 +83,14 @@ def test_update_missing_task_returns_404(client):
 
 def test_update_task_description(client):
     # Create a task first
-    created = client.post("/tasks", json={"title": "Partial update", "description": "Initial description"}).json()
+    created = client.post(
+        "/tasks", json={"title": "Partial update", "description": "Initial description"}
+    ).json()
 
     # Update only the description
-    response = client.patch(f"/tasks/{created['id']}", json={"description": "Updated description"})
+    response = client.patch(
+        f"/tasks/{created['id']}", json={"description": "Updated description"}
+    )
 
     # Assert the response
     assert response.status_code == 200
@@ -96,7 +102,9 @@ def test_update_task_description(client):
 
 def test_update_task_no_changes(client):
     # Create a task first
-    created = client.post("/tasks", json={"title": "No changes", "description": "Initial description"}).json()
+    created = client.post(
+        "/tasks", json={"title": "No changes", "description": "Initial description"}
+    ).json()
 
     # Update with no changes
     response = client.patch(f"/tasks/{created['id']}", json={})
@@ -111,10 +119,19 @@ def test_update_task_no_changes(client):
 
 def test_update_full_update(client):
     # Create a task first
-    created = client.post("/tasks", json={"title": "Full update", "description": "Initial description"}).json()
+    created = client.post(
+        "/tasks", json={"title": "Full update", "description": "Initial description"}
+    ).json()
 
     # Update both title and description
-    response = client.patch(f"/tasks/{created['id']}", json={"title": "Updated title", "description": "Updated description", "done": True})
+    response = client.patch(
+        f"/tasks/{created['id']}",
+        json={
+            "title": "Updated title",
+            "description": "Updated description",
+            "done": True,
+        },
+    )
 
     # Assert the response
     assert response.status_code == 200
@@ -173,7 +190,10 @@ def test_update_null_done(client):
 
 def test_update_null_description(client):
     # Create a task first
-    created = client.post("/tasks", json={"title": "Original title", "description": "Original description"}).json()
+    created = client.post(
+        "/tasks",
+        json={"title": "Original title", "description": "Original description"},
+    ).json()
 
     # Update with a null description
     response = client.patch(f"/tasks/{created['id']}", json={"description": None})
@@ -193,7 +213,7 @@ def test_delete_task(client):
 
     # Assert the response
     assert response.status_code == 204
-    assert response.content == b""  # No content for 204 response   
+    assert response.content == b""  # No content for 204 response
 
     # Verify the task is actually deleted
     get_response = client.get(f"/tasks/{created['id']}")
