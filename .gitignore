@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local database
+*.db
+
+# Test / coverage output
+.pytest_cache/
+.coverage
+htmlcov/
+HANDOFF.md
+
+# Environment secrets (never commit these)
+.env
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
