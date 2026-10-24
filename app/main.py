@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -33,8 +33,20 @@ def create_task(task_in: schemas.TaskCreate, db: Annotated[Session, Depends(get_
 
 
 @app.get("/tasks", response_model=list[schemas.TaskRead])
-def list_tasks(db: Annotated[Session, Depends(get_db)]):
-    return db.scalars(select(models.Task).order_by(models.Task.id)).all()
+def list_tasks(
+    db: Annotated[Session, Depends(get_db)],
+    params: Annotated[schemas.TaskListParams, Query()],
+):
+
+    query = (
+        select(models.Task)
+        .order_by(models.Task.id)
+        .limit(params.limit)
+        .offset(params.offset)
+    )
+    if params.done is not None:
+        query = query.where(models.Task.done == params.done)
+    return db.scalars(query).all()
 
 
 @app.get("/tasks/{task_id}", response_model=schemas.TaskRead)
