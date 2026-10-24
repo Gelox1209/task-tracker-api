@@ -47,6 +47,7 @@ def test_create_strip_whitespace_title(client):
     data = response.json()
     assert data["title"] == "Trim me"  # whitespace should be stripped
 
+
 def test_create_task_accepts_200_char_title(client):
     max_length_title = "a" * 200  # 200 characters
     response = client.post("/tasks", json={"title": max_length_title})

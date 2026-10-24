@@ -23,3 +23,7 @@ jobs:
 
       - name: Run tests with coverage
         run: pytest --cov=app --cov-report=term-missing
+
+      - name: Run Ruff linter
+        run: ruff check .
+        run: ruff format --check .
