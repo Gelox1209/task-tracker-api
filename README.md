@@ -36,8 +36,8 @@ pytest --cov=app --cov-report=term-missing   # see which lines aren't tested
 | POST   | `/tasks`        | Create a task      | 201     |
 | GET    | `/tasks`        | List all tasks     | 200     |
 | GET    | `/tasks/{id}`   | Get one task       | 200 / 404 |
-| GET    | `/tasks?offset=`| Get tasks with offset, 0 or more    | 200 / 422 |
-| GET    | `/tasks?limit=` | Get tasks with limit, between 1-100 | 200 / 422 |
+| GET    | `/tasks?offset=`| Get tasks with offset, 0 or more  | 200 / 422 |
+| GET    | `/tasks?offset={>0}&limit={1-100}&done={True/False}`| List tasks, paginated and filterable | 200 / 422 |
 | GET    | `/tasks?done=`  | Get tasks that is done or not done  | 200 / 422 |
 | PATCH  | `/tasks/{id}`   | Edit a task        | 200 / 422 / 404 |
 | DELETE | `/tasks/{id}`   | Delete a task      | 204 / 404 |
