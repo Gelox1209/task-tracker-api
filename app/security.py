@@ -11,6 +11,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token lifetime in minutes
 if SECRET_KEY is None:
     raise RuntimeError("SECRET_KEY environment variable is not set")
 
+
 def create_access_token(user_id: str) -> str:
 
     expiration = datetime.now(UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

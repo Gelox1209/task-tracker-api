@@ -27,6 +27,7 @@ def test_login(client):
     assert decoded_token["sub"] == "1"
     assert decoded_token["exp"] > datetime.now(UTC).timestamp()
 
+
 def test_login_uppercase_username(client):
     # Create a test user
     client.post(
@@ -47,6 +48,7 @@ def test_login_uppercase_username(client):
     )
     assert decoded_token["sub"] == "1"
     assert decoded_token["exp"] > datetime.now(UTC).timestamp()
+
 
 def test_login_unknown_user(client):
     response = client.post(
