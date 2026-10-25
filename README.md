@@ -50,14 +50,31 @@ pytest --cov=app --cov-report=term-missing   # see which lines aren't tested
 ```
 app/
   main.py       # routes (the endpoints)
-  models.py     # database tables
+  models.py     # database tables (Task, User)
   schemas.py    # request/response validation
+  security.py   # password hashing + JWT creation
   database.py   # DB connection + session
 tests/
-  conftest.py   # test setup (fresh DB per test)
-  test_tasks.py # endpoint tests
-.github/workflows/tests.yml  # CI: runs tests on every push
+  conftest.py   # test setup (fresh DB per test, test SECRET_KEY)
+  test_tasks.py # task endpoint tests
+  test_users.py # signup tests
+  test_auth.py  # login + token tests
+.github/workflows/tests.yml  # CI: tests, lint, and format check on every push and PR
+requirements.txt             # Python dependencies
 ```
+
+## Tech stack
+
+| Area | Tools |
+|------|-------|
+| Language | Python 3.12 |
+| Web framework | FastAPI, served by Uvicorn |
+| Database | SQLite via SQLAlchemy 2.0 (ORM) |
+| Validation | Pydantic v2 |
+| Auth | PyJWT (HS256 tokens), pwdlib with Argon2 (password hashing), python-multipart (login form) |
+| Testing | pytest, pytest-cov, FastAPI TestClient (httpx) |
+| Code quality | Ruff (linting + formatting) |
+| CI | GitHub Actions |
 
 ## Roadmap
 - [x] `PATCH /tasks/{id}` and `DELETE /tasks/{id}`
