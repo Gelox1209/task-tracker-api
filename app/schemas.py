@@ -7,9 +7,15 @@ what clients can send and see.
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 Title = Annotated[str, Field(min_length=1, max_length=200)]
+Username = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True, to_lower=True, min_length=3, max_length=50
+    ),
+]
 
 
 class TaskConfig(BaseModel):
@@ -47,3 +53,23 @@ class TaskRead(BaseModel):
 class TaskUpdate(TaskCreate):
     title: Title = None
     done: bool = Field(default=None)
+
+
+class UserCreate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    username: Username
+    password: str = Field(min_length=8, max_length=100)
+
+
+class UserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    username: str
+    created_at: datetime
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

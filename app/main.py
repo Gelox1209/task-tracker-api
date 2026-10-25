@@ -3,10 +3,12 @@
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app import models, schemas
+from app import models, schemas, security
 from app.database import Base, engine, get_db
 
 # Creates tables on startup. Fine for learning; real projects use migrations (Alembic).
@@ -30,6 +32,61 @@ def create_task(task_in: schemas.TaskCreate, db: Annotated[Session, Depends(get_
     db.commit()
     db.refresh(task)  # reload so id and created_at are filled in
     return task
+
+
+@app.post(
+    "/users", response_model=schemas.UserRead, status_code=status.HTTP_201_CREATED
+)
+def create_user(user_in: schemas.UserCreate, db: Annotated[Session, Depends(get_db)]):
+
+    query = select(models.User).where(models.User.username == user_in.username)
+    if db.scalar(query) is None:
+        user = models.User(
+            username=user_in.username,
+            hashed_password=security.hash_password(user_in.password),
+        )
+        db.add(user)
+        # In the case of race condition, and two account creation pass the check.
+        # Its slower, so I'm keeping the faster pre-check query above.
+        try:
+            db.commit()
+        except IntegrityError:
+            db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail="Username already exists"
+            )
+        db.refresh(user)  # reload so id and created_at are filled in
+        return user
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Username already exists"
+        )
+
+
+@app.post("/auth/token", response_model=schemas.Token)
+def login(
+    form: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[Session, Depends(get_db)],
+):
+    username = form.username.strip().lower()
+    query = select(models.User).where(models.User.username == username)
+    user = db.scalar(query)
+
+    verified = (
+        security.verify_password(form.password, user.hashed_password)
+        if user
+        else security.verify_password(form.password, security.DUMMY_HASH)
+    )
+
+    if user is None or not verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = security.create_access_token(str(user.id))
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.get("/tasks", response_model=list[schemas.TaskRead])

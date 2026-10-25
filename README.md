@@ -9,6 +9,7 @@ A REST API for managing tasks, built with **FastAPI**, **SQLAlchemy**, and **pyt
 - Input validation with clear error responses
 - SQLite database (swappable for PostgreSQL)
 - Automated tests with GitHub Actions CI
+- User signup and JWT login
 
 ## Run locally
 
@@ -16,6 +17,8 @@ A REST API for managing tasks, built with **FastAPI**, **SQLAlchemy**, and **pyt
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+export SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))") # App needs secret key to start
+# Windows: $env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"
 uvicorn app.main:app --reload
 ```
 
@@ -34,6 +37,8 @@ pytest --cov=app --cov-report=term-missing   # see which lines aren't tested
 |--------|-----------------|--------------------|---------|
 | GET    | `/health`       | Health check       | 200     |
 | POST   | `/tasks`        | Create a task      | 201     |
+| POST   | `/users`        | Create a user      | 201 / 409 |
+| POST   | `/auth/token`   | Login/authenticate | 200 / 401 |
 | GET    | `/tasks`        | List all tasks     | 200     |
 | GET    | `/tasks/{id}`   | Get one task       | 200 / 404 |
 | GET    | `/tasks?offset={≥0}&limit={1-100}&done={true/false}`| List tasks, paginated and filterable | 200 / 422 |
