@@ -187,3 +187,23 @@ def test_password_kept_case(client, db_session):
 
     assert security.verify_password("mysecret!pass", user.hashed_password) != True
     assert security.verify_password("MySecret!Pass", user.hashed_password) == True
+
+
+def test_race_condition(client, db_session, monkeypatch):
+    # Create the first user
+    response = client.post(
+        "/users", json={"username": "testuser", "password": "testpassword"}
+    )
+    data = response.json()
+    assert data["username"] == "testuser"
+    assert response.status_code == 201
+
+    monkeypatch.setattr(
+        db_session, "scalar", lambda *args, **kwargs: None
+    )  # Simulate race condition by making the user not found
+    response = client.post(
+        "/users", json={"username": "testuser", "password": "testpassword"}
+    )
+    data = response.json()
+    assert data["detail"] == "Username already exists"
+    assert response.status_code == 409
