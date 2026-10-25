@@ -10,7 +10,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 
-os.environ["SECRET_KEY"] = "test_secret_key_32_characters_long"
+os.environ["SECRET_KEY"] = "fake_secret_key_32_characters_long"
 
 from app.main import app
 

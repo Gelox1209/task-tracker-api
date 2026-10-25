@@ -71,12 +71,11 @@ def login(
     username = form.username.strip().lower()
     query = select(models.User).where(models.User.username == username)
     user = db.scalar(query)
-    dummy_hash = security.hash_password("some-dummy-password")
 
     verified = (
         security.verify_password(form.password, user.hashed_password)
         if user
-        else security.verify_password(form.password, dummy_hash)
+        else security.verify_password(form.password, security.dummy_hash)
     )
 
     if user is None or not verified:
