@@ -18,6 +18,7 @@ python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 export SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))") # App needs secret key to start
+# Windows: $env:SECRET_KEY = python -c "import secrets; print(secrets.token_hex(32))"
 uvicorn app.main:app --reload
 ```
 
