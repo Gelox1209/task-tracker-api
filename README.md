@@ -9,6 +9,7 @@ A REST API for managing tasks, built with **FastAPI**, **SQLAlchemy**, and **pyt
 - Input validation with clear error responses
 - SQLite database (swappable for PostgreSQL)
 - Automated tests with GitHub Actions CI
+- User signup and JWT login
 
 ## Run locally
 
@@ -16,6 +17,7 @@ A REST API for managing tasks, built with **FastAPI**, **SQLAlchemy**, and **pyt
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+export SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))") # App needs secret key to start
 uvicorn app.main:app --reload
 ```
 

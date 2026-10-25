@@ -29,6 +29,6 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return password_hash.verify(password, hashed_password)
 
 
-dummy_hash = hash_password(
+DUMMY_HASH = hash_password(
     "some-dummy-password"
 )  # Precomputed dummy hash for timing attack prevention

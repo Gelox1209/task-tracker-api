@@ -185,8 +185,8 @@ def test_password_kept_case(client, db_session):
     query = select(models.User).where(models.User.username == "testuser")
     user = db_session.scalar(query)
 
-    assert security.verify_password("mysecret!pass", user.hashed_password) != True
-    assert security.verify_password("MySecret!Pass", user.hashed_password) == True
+    assert not security.verify_password("mysecret!pass", user.hashed_password)
+    assert security.verify_password("MySecret!Pass", user.hashed_password)
 
 
 def test_race_condition(client, db_session, monkeypatch):

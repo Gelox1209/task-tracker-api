@@ -75,7 +75,7 @@ def login(
     verified = (
         security.verify_password(form.password, user.hashed_password)
         if user
-        else security.verify_password(form.password, security.dummy_hash)
+        else security.verify_password(form.password, security.DUMMY_HASH)
     )
 
     if user is None or not verified:
