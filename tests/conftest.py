@@ -1,5 +1,7 @@
 """Shared test setup: every test gets a fresh, empty in-memory database."""
 
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -7,6 +9,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
+
+os.environ["SECRET_KEY"] = "test_secret_key_32_characters_long"
+
 from app.main import app
 
 

@@ -3,6 +3,7 @@
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -60,6 +61,33 @@ def create_user(user_in: schemas.UserCreate, db: Annotated[Session, Depends(get_
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Username already exists"
         )
+
+
+@app.post("/auth/token", response_model=schemas.Token)
+def login(
+    form: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[Session, Depends(get_db)],
+):
+    username = form.username.strip().lower()
+    query = select(models.User).where(models.User.username == username)
+    user = db.scalar(query)
+    dummy_hash = security.hash_password("some-dummy-password")
+
+    verified = (
+        security.verify_password(form.password, user.hashed_password)
+        if user
+        else security.verify_password(form.password, dummy_hash)
+    )
+
+    if user is None or not verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = security.create_access_token(str(user.id))
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.get("/tasks", response_model=list[schemas.TaskRead])

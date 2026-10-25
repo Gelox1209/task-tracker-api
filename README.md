@@ -34,6 +34,8 @@ pytest --cov=app --cov-report=term-missing   # see which lines aren't tested
 |--------|-----------------|--------------------|---------|
 | GET    | `/health`       | Health check       | 200     |
 | POST   | `/tasks`        | Create a task      | 201     |
+| POST   | `/users`        | Create a user      | 201 / 409 |
+| POST   | `/auth/token`   | Login/authenticate | 200 / 401 |
 | GET    | `/tasks`        | List all tasks     | 200     |
 | GET    | `/tasks/{id}`   | Get one task       | 200 / 404 |
 | GET    | `/tasks?offset={≥0}&limit={1-100}&done={true/false}`| List tasks, paginated and filterable | 200 / 422 |
